@@ -3,11 +3,13 @@
 
 #include "stdafx.h"
 #include "RenderWindow.h"
+#include<RendererController.h>
 
 #define MAX_LOADSTRING 100
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
+HWND mainWindow;
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
@@ -41,15 +43,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_RENDERWINDOW));
 
     MSG msg;
-
+	Renderer::CRendererController instance(mainWindow);
     // Main message loop:
-    while (GetMessage(&msg, nullptr, 0, 0))
+    while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE) || true)
     {
         if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
+
+		instance.Draw();
     }
 
     return (int) msg.wParam;
@@ -97,16 +101,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+    mainWindow = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
-   if (!hWnd)
+   if (!mainWindow)
    {
       return FALSE;
    }
 
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
+   ShowWindow(mainWindow, nCmdShow);
+   UpdateWindow(mainWindow);
 
    return TRUE;
 }
@@ -178,3 +182,4 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return (INT_PTR)FALSE;
 }
+

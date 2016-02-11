@@ -15,6 +15,7 @@
 // DirectX Header Files:
 #include <d3d11.h>
 #include <d2d1_1.h>
+#include <dxgi.h>
 #include <dwrite.h>
 #include <dxgi1_2.h>
 #include <Wincodec.h>

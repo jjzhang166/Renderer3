@@ -6,7 +6,6 @@
 * Author:
 * Purpose:
 ************************************************/
-
 #include "stdafx.h"
 #include "..\stdafx.h"
 #include "..\Inc\DeviceResoureces.h"
@@ -18,12 +17,12 @@ using namespace Microsoft::WRL;
 
 namespace Renderer
 {
-	CDeviceResoureces::CDeviceResoureces(HWND _mainWindow,unsigned int _width, unsigned int _height) :
-		m_window(_mainWindow),
+	CDeviceResoureces::CDeviceResoureces(HWND mainWindow,unsigned int uwidth, unsigned int uheight) :
+		m_window(mainWindow),
 		m_screenViewport(),
 		m_d3dFeatureLevel(D3D_FEATURE_LEVEL_11_0),
-		m_d3dRenderTargetSize({ static_cast<LONG>(_width), static_cast<LONG>(_height) }),
-		m_outputSize({ static_cast<LONG>(_width), static_cast<LONG>(_height) })
+		m_d3dRenderTargetSize({ static_cast<LONG>(uwidth), static_cast<LONG>(uheight) }),
+		m_outputSize({ static_cast<LONG>(uwidth), static_cast<LONG>(uheight) })
 	{
 		m_outputSize.cx = max(m_outputSize.cx, 1);
 		m_outputSize.cy = max(m_outputSize.cy, 1);
@@ -33,9 +32,6 @@ namespace Renderer
 	}
 
 
-	CDeviceResoureces::~CDeviceResoureces()
-	{
-	}
 
 	void CDeviceResoureces::CreateDeviceResources()
 	{
@@ -89,7 +85,7 @@ namespace Renderer
 
 		HRESULT hr = D3D11CreateDevice(
 			adapters[bestAdapterIndex].Get(),
-			D3D_DRIVER_TYPE_HARDWARE,	
+			D3D_DRIVER_TYPE_UNKNOWN,
 			0,							
 			creationFlags,				
 			requestLevels,				
@@ -103,11 +99,7 @@ namespace Renderer
 
 
 
-		// Create the Direct2D device object and a corresponding context.
-		ComPtr<IDXGIDevice> dxgiDevice;
-		AssertIfFailed(
-			m_d3dDevice.As(&dxgiDevice)
-			);
+
 
 	}
 
@@ -144,7 +136,7 @@ namespace Renderer
 		m_d3dContext->Flush();
 
 		m_d3dRenderTargetSize.cx = m_outputSize.cx;
-		m_d3dRenderTargetSize.cy = m_outputSize.cx;
+		m_d3dRenderTargetSize.cy = m_outputSize.cy;
 
 		if (m_swapChain != nullptr)
 		{
@@ -163,6 +155,7 @@ namespace Renderer
 		{
 			// Otherwise, create a new one using the same adapter as the existing Direct3D device.
 			DXGI_SWAP_CHAIN_DESC swapChainDesc = { 0 };
+			ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
 			swapChainDesc.BufferDesc.Width = lround(m_d3dRenderTargetSize.cx);		// Match the size of the window.
 			swapChainDesc.BufferDesc.Height = lround(m_d3dRenderTargetSize.cy);
 			swapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;				// This is the most common swap chain format.
@@ -172,7 +165,8 @@ namespace Renderer
 			swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 			swapChainDesc.BufferCount = 2;									// Use double-buffering to minimize latency.
 			swapChainDesc.Flags = 0;
-
+			swapChainDesc.OutputWindow = m_window;
+			swapChainDesc.Windowed = true;
 			// This sequence obtains the DXGI factory that was used to create the Direct3D device above.
 			ComPtr<IDXGIDevice> dxgiDevice;
 			AssertIfFailed(
@@ -232,7 +226,7 @@ namespace Renderer
 				)
 			);
 
-		CD3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc(D3D11_DSV_DIMENSION_TEXTURE2D);
+		CD3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc(D3D11_DSV_DIMENSION_TEXTURE2D, DXGI_FORMAT_D24_UNORM_S8_UINT);
 		AssertIfFailed(
 			m_d3dDevice->CreateDepthStencilView(
 				depthStencil.Get(),
@@ -254,14 +248,14 @@ namespace Renderer
 		
 	}
 
-	void CDeviceResoureces::ResizeWindow(unsigned int _width, unsigned int _height)
+	void CDeviceResoureces::ResizeWindow(unsigned int uwidth, unsigned int uheight)
 	{
-		m_outputSize.cx = _width;
-		m_outputSize.cy = _height;
+		m_outputSize.cx = uwidth;
+		m_outputSize.cy = uheight;
 		CreateWindowSizeDependentResources();
 	}
-	void CDeviceResoureces::Present(unsigned int vsync)
+	void CDeviceResoureces::Present(unsigned int uvsync)
 	{
-		m_swapChain->Present(vsync, 0);
+		m_swapChain->Present(uvsync, 0);
 	}
 }
