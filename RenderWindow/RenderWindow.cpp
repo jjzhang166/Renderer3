@@ -44,17 +44,22 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 	Renderer::CRendererController instance(mainWindow);
-    // Main message loop:
-    while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE) || true)
-    {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
+	while (true)
+	{
+		// Main message loop:
+		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+		{
+			
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			
+		}
 
+		if (msg.message == WM_QUIT)
+			break;
 		instance.Draw();
-    }
+	}
+   
 
     return (int) msg.wParam;
 }

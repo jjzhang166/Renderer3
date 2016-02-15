@@ -105,24 +105,24 @@ namespace Renderer
 
 	void CDeviceResoureces::CreateDeviceIndependentResources()
 	{
-		// Initialize the DirectWrite Factory.
-		AssertIfFailed(
-			DWriteCreateFactory(
-				DWRITE_FACTORY_TYPE_SHARED,
-				__uuidof(IDWriteFactory),
-				&m_dwriteFactory
-				)
-			);
+		//// Initialize the DirectWrite Factory.
+		//AssertIfFailed(
+		//	DWriteCreateFactory(
+		//		DWRITE_FACTORY_TYPE_SHARED,
+		//		__uuidof(IDWriteFactory),
+		//		&m_dwriteFactory
+		//		)
+		//	);
 
-		// Initialize the Windows Imaging Component (WIC) Factory.
-		AssertIfFailed(
-			CoCreateInstance(
-				CLSID_WICImagingFactory,
-				nullptr,
-				CLSCTX_INPROC_SERVER,
-				IID_PPV_ARGS(&m_wicFactory)
-				)
-			);
+		//// Initialize the Windows Imaging Component (WIC) Factory.
+		//AssertIfFailed(
+		//	CoCreateInstance(
+		//		CLSID_WICImagingFactory,
+		//		nullptr,
+		//		CLSCTX_INPROC_SERVER,
+		//		IID_PPV_ARGS(&m_wicFactory)
+		//		)
+		//	);
 	}
 	
 	// These resources need to be recreated every time the window size is changed.

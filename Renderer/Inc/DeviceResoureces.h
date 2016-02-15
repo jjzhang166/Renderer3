@@ -24,7 +24,7 @@ namespace Renderer
 	{
 		
 
-		// Direct3D objects.
+		// Direct3D objects. 
 		Microsoft::WRL::ComPtr<ID3D11Device>			m_d3dDevice;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>		m_d3dContext;
 		Microsoft::WRL::ComPtr<IDXGISwapChain>			m_swapChain;
@@ -53,7 +53,6 @@ namespace Renderer
 		void CreateWindowSizeDependentResources();
 	public:
 		RENDERER_API CDeviceResoureces(HWND mainWindow, unsigned int uwidth, unsigned int uheight);
-
 		RENDERER_API void ResizeWindow(unsigned int uwidth, unsigned int uheight);
 		// Default no vsync
 		RENDERER_API void Present(unsigned int uvsync = 0);

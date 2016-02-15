@@ -12,6 +12,7 @@
 #include <windows.h>
 #include <wrl.h>
 #include <wrl/client.h>
+#include <comdef.h>
 // DirectX Header Files:
 #include <d3d11.h>
 #include <d2d1_1.h>
@@ -24,6 +25,8 @@
 // STL Header Files:
 #include <memory>
 #include <vector>
+#include <string>
+#include <fstream>
 #include <assert.h>
 
 
@@ -66,6 +69,8 @@ inline void AssertIfFailed(HRESULT hr)
 {
 	if (FAILED(hr))
 	{
-		assert(true && hr);
+		_com_error err(hr);
+		OutputDebugString(err.ErrorMessage());
+		assert(false);
 	}
 }
