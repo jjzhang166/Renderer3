@@ -9,9 +9,7 @@
 #include "stdafx.h"
 #include "..\stdafx.h"
 #include "..\Inc\RendererController.h"
-#include "..\Inc\DeviceResoureces.h"
-#include "..\Inc\ShaderHandle.h"
-
+#include "..\Inc\ShaderPass.h"
 namespace Renderer
 {
 	bool CRendererController::m_bInstantiated = false;
@@ -27,13 +25,7 @@ namespace Renderer
 		m_deviceResources = std::make_shared<CDeviceResoureces>(mainWindow, uwidth, uheight);
 		m_bInstantiated = true;
 
-		//CShaderHandle<ID3D11VertexShader> vs(m_deviceResources->GetD3DDevice(), "VertexShader.cso");
-		//CShaderHandle<ID3D11ComputeShader> cs(m_deviceResources->GetD3DDevice(), "ComputeShader.cso");
-		//CShaderHandle<ID3D11PixelShader> ps(m_deviceResources->GetD3DDevice(), "PixelShader.cso");
-		//CShaderHandle<ID3D11HullShader> hs(m_deviceResources->GetD3DDevice(), "HullShader.cso");
-		//CShaderHandle<ID3D11DomainShader> ds(m_deviceResources->GetD3DDevice(), "DomainShader.cso");
-		//CShaderHandle<ID3D11GeometryShader> gs(m_deviceResources->GetD3DDevice(), "GeometryShader.cso");
-
+		CShaderPass pass(m_deviceResources->GetD3DDevice());
 	}
 
 

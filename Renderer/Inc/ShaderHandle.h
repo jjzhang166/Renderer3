@@ -6,6 +6,8 @@
 * Author:
 * Purpose:
 ************************************************/
+
+
 #pragma once
 
 #ifdef RENDERER_EXPORTS
@@ -15,21 +17,31 @@
 #endif
 
 
-#include "..\stdafx.h"
 
 namespace Renderer
 {
 	template<typename Shadertype>
-	class  CShaderHandle
+	class CShaderHandle
 	{
 	public:
+		RENDERER_API  ~CShaderHandle();
 		RENDERER_API explicit CShaderHandle(ID3D11Device* d3dDevice, std::string shaderFile);
 
 	private:
-		Microsoft::WRL::ComPtr<Shadertype> m_shader;
-		CShaderHandle(CShaderHandle const&);
-		CShaderHandle& operator=( CShaderHandle const&);
+		 Microsoft::WRL::ComPtr<Shadertype> m_shader;
+		 CShaderHandle(CShaderHandle const&) = delete;
+		 CShaderHandle& operator=( CShaderHandle const&) = delete;
 	};
+
+
+	template<typename Shadertype>
+	CShaderHandle<Shadertype>::~CShaderHandle()
+	{
+		if (m_shader)
+		{
+			m_shader.Reset();
+		}
+	}
 
 	template<>
 	CShaderHandle<ID3D11VertexShader>::CShaderHandle(ID3D11Device* d3dDevice, std::string shaderFile)
@@ -145,3 +157,4 @@ namespace Renderer
 
 
 }
+

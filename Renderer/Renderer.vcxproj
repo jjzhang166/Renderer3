@@ -154,10 +154,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Inc\DeviceResoureces.h" />
-    <ClInclude Include="Inc\RenderBase.h" />
+    <ClInclude Include="Inc\Material.h" />
     <ClInclude Include="Inc\RendererController.h" />
+    <ClInclude Include="Inc\RenderNode.h" />
+    <ClInclude Include="Inc\RenderSet.h" />
+    <ClInclude Include="Inc\ShaderEffect.h" />
     <ClInclude Include="Inc\ShaderHandle.h" />
+    <ClInclude Include="Inc\ShaderPass.h" />
     <ClInclude Include="Inc\StepTimer.h" />
+    <ClInclude Include="Inc\View.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -177,7 +182,12 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Src\DeviceResoureces.cpp" />
+    <ClCompile Include="Src\Material.cpp" />
     <ClCompile Include="Src\RendererController.cpp" />
+    <ClCompile Include="Src\RenderSet.cpp" />
+    <ClCompile Include="Src\ShaderEffect.cpp" />
+    <ClCompile Include="Src\ShaderPass.cpp" />
+    <ClCompile Include="Src\View.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
