@@ -26,12 +26,13 @@ namespace Renderer
 		assert(!m_bInstantiated && "Only one CRendererController instance is allowed.");
 		m_deviceResources = std::make_shared<CDeviceResoureces>(mainWindow, uwidth, uheight);
 		m_bInstantiated = true;
-		CShaderHandle<ID3D11VertexShader> vs(m_deviceResources->GetD3DDevice(), "VertexShader.cso");
-		CShaderHandle<ID3D11ComputeShader> cs(m_deviceResources->GetD3DDevice(), "ComputeShader.cso");
-		CShaderHandle<ID3D11PixelShader> ps(m_deviceResources->GetD3DDevice(), "PixelShader.cso");
-		CShaderHandle<ID3D11HullShader> hs(m_deviceResources->GetD3DDevice(), "HullShader.cso");
-		CShaderHandle<ID3D11DomainShader> ds(m_deviceResources->GetD3DDevice(), "DomainShader.cso");
-		CShaderHandle<ID3D11GeometryShader> gs(m_deviceResources->GetD3DDevice(), "GeometryShader.cso");
+
+		//CShaderHandle<ID3D11VertexShader> vs(m_deviceResources->GetD3DDevice(), "VertexShader.cso");
+		//CShaderHandle<ID3D11ComputeShader> cs(m_deviceResources->GetD3DDevice(), "ComputeShader.cso");
+		//CShaderHandle<ID3D11PixelShader> ps(m_deviceResources->GetD3DDevice(), "PixelShader.cso");
+		//CShaderHandle<ID3D11HullShader> hs(m_deviceResources->GetD3DDevice(), "HullShader.cso");
+		//CShaderHandle<ID3D11DomainShader> ds(m_deviceResources->GetD3DDevice(), "DomainShader.cso");
+		//CShaderHandle<ID3D11GeometryShader> gs(m_deviceResources->GetD3DDevice(), "GeometryShader.cso");
 
 	}
 

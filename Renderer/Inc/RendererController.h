@@ -31,6 +31,9 @@ namespace Renderer
 		RENDERER_API ~CRendererController();
 		RENDERER_API void CreateDeviceResources();
 		RENDERER_API void Draw();
+	private:
+		CRendererController(const CRendererController&);
+		CRendererController& operator=(const CRendererController&);
 	};
 
 }

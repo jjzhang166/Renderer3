@@ -17,6 +17,12 @@
       <UniqueIdentifier>{51faae21-7638-4052-b23f-a46c6e36fd75}</UniqueIdentifier>
       <Extensions>hlsl</Extensions>
     </Filter>
+    <Filter Include="Shaders\DummyVS">
+      <UniqueIdentifier>{ea4853e9-6691-4a15-8c8e-cfb0a0fb3caa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\CelShadingPass">
+      <UniqueIdentifier>{b053d06c-979d-46e7-bd80-e62181eeaf7f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

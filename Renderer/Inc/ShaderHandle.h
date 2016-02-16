@@ -19,15 +19,16 @@
 
 namespace Renderer
 {
-	template<class Shadertype>
+	template<typename Shadertype>
 	class  CShaderHandle
 	{
 	public:
-		RENDERER_API CShaderHandle(ID3D11Device* d3dDevice, std::string shaderFile);
+		RENDERER_API explicit CShaderHandle(ID3D11Device* d3dDevice, std::string shaderFile);
 
 	private:
 		Microsoft::WRL::ComPtr<Shadertype> m_shader;
-
+		CShaderHandle(CShaderHandle const&);
+		CShaderHandle& operator=( CShaderHandle const&);
 	};
 
 	template<>
