@@ -24,10 +24,10 @@ namespace Renderer
 		typedef  bool(*CompareFunc)(const IRenderNode* const lhs, const IRenderNode* const rhs);
 		std::list<IRenderNode*> m_set;
 	public:
-		CRenderSet();
-		~CRenderSet();
-		void AddtoHead(IRenderNode* node);
-		void AddtoTail(IRenderNode* node);
-		void Sort(CompareFunc sortMethod);
+		RENDERER_API CRenderSet();
+		RENDERER_API ~CRenderSet();
+		RENDERER_API void AddtoHead(IRenderNode* node);
+		RENDERER_API void AddtoTail(IRenderNode* node);
+		RENDERER_API void Sort(CompareFunc sortMethod);
 	};
 }

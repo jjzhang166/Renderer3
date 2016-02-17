@@ -6,8 +6,6 @@
 * Author:
 * Purpose:
 ************************************************/
-
-
 #pragma once
 
 #ifdef RENDERER_EXPORTS
@@ -16,8 +14,6 @@
 #define RENDERER_API __declspec(dllimport)
 #endif
 
-
-
 namespace Renderer
 {
 	template<typename Shadertype>
@@ -25,12 +21,12 @@ namespace Renderer
 	{
 	public:
 		RENDERER_API  ~CShaderHandle();
-		RENDERER_API explicit CShaderHandle(ID3D11Device* d3dDevice, std::string shaderFile);
+		RENDERER_API explicit  CShaderHandle(ID3D11Device* d3dDevice, std::string shaderFile);
 
 	private:
-		 Microsoft::WRL::ComPtr<Shadertype> m_shader;
-		 CShaderHandle(CShaderHandle const&) = delete;
-		 CShaderHandle& operator=( CShaderHandle const&) = delete;
+		Microsoft::WRL::ComPtr<Shadertype> m_shader;
+		CShaderHandle(CShaderHandle const&) = delete;
+		CShaderHandle& operator=(CShaderHandle const&) = delete;
 	};
 
 
