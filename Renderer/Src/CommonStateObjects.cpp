@@ -111,7 +111,6 @@ namespace Renderer
 	bool CCommonStateObjects::m_bInstantiated = false;
 	CCommonStateObjects::CCommonStateObjects()
 	{
-		
 		assert(!m_bInstantiated && "Only one CCommonStateObjects instance is allowed.");
 		CreateBlendState(D3D11_BLEND_ONE, D3D11_BLEND_ZERO, &m_blendStates[Opaque_BS]);
 		CreateBlendState(D3D11_BLEND_ONE, D3D11_BLEND_INV_SRC_ALPHA, &m_blendStates[AlphaBlend_BS]);
