@@ -33,8 +33,8 @@ namespace Renderer
 			std::unordered_map<std::string, float> m_floatMap;
 		};
 
-		CRenderSet* m_shaderEffects = nullptr;
-		CRenderSet* m_renderables = nullptr;
+		std::unique_ptr<CRenderSet> m_shaderEffects;
+		std::unique_ptr<CRenderSet> m_renderables;
 	public:
 		CMaterialInput m_materialInput;
 		CMaterial();

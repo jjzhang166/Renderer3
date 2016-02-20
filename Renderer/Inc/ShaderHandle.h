@@ -22,9 +22,9 @@ namespace Renderer
 	public:
 		RENDERER_API  ~CShaderHandle();
 		RENDERER_API explicit  CShaderHandle(ID3D11Device* d3dDevice, std::string shaderFile);
+		Microsoft::WRL::ComPtr<Shadertype> m_shader;
 
 	private:
-		Microsoft::WRL::ComPtr<Shadertype> m_shader;
 		CShaderHandle(CShaderHandle const&) = delete;
 		CShaderHandle& operator=(CShaderHandle const&) = delete;
 	};

@@ -9,11 +9,16 @@
 #include "stdafx.h"
 #include "..\stdafx.h"
 #include "..\Inc\View.h"
+#include "..\Inc\RendererController.h"
 
+using namespace std;
+using namespace DirectX;
 namespace Renderer
 {
-	CView::CView()
+	CView::CView(XMFLOAT4X4 d3dViewMatrix, XMFLOAT4X4 d3dProjMatrix) : m_d3dViewMatrix(d3dViewMatrix),m_d3dProjMatrix(d3dProjMatrix)
 	{
+		m_MainRTVs = CRendererController::m_deviceResources->GetBackBufferRenderTargetView();
+		m_DepthView = CRendererController::m_deviceResources->GetDepthStencilView();
 	}
 
 
@@ -24,11 +29,13 @@ namespace Renderer
 
 	/*virtual*/ void CView::Begin(IRenderNode* pCurrentView)
 	{
-
+		currentState = VIEW_BEGIN;
+		CRendererController::m_deviceResources->GetD3DDeviceContext()->OMSetRenderTargets(1, &m_MainRTVs, m_DepthView);
 	}
 
 	/*virtual*/ void CView::End(IRenderNode* pCurrentView)
 	{
-
+		currentState = VIEW_END;
+		CRendererController::m_deviceResources->GetD3DDeviceContext()->OMSetRenderTargets(0, nullptr, nullptr);
 	}
 }

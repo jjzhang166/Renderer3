@@ -168,6 +168,7 @@
     <ClInclude Include="Inc\CommonStateObjects.h" />
     <ClInclude Include="Inc\DeviceResoureces.h" />
     <ClInclude Include="Inc\Material.h" />
+    <ClInclude Include="Inc\Renderable.h" />
     <ClInclude Include="Inc\RendererController.h" />
     <ClInclude Include="Inc\RenderNode.h" />
     <ClInclude Include="Inc\RenderSet.h" />
@@ -197,6 +198,7 @@
     <ClCompile Include="Src\CommonStateObjects.cpp" />
     <ClCompile Include="Src\DeviceResoureces.cpp" />
     <ClCompile Include="Src\Material.cpp" />
+    <ClCompile Include="Src\Renderable.cpp" />
     <ClCompile Include="Src\RendererController.cpp" />
     <ClCompile Include="Src\RenderSet.cpp" />
     <ClCompile Include="Src\ShaderEffect.cpp" />

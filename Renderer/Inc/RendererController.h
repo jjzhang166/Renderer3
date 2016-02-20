@@ -16,15 +16,12 @@
 #include "DeviceResoureces.h"
 namespace Renderer
 {
-	class BlendStateManager;
-	class DepthStencilStateManager;
+
 	class StreamManager;
 	class CRendererController
 	{
 		static bool m_bInstantiated;
-		/*static std::unique_ptr<BlendStateManager> m_blendStateManager;
-		static std::unique_ptr<DepthStencilStateManager> m_DepthStenciStateManager;
-		static std::unique_ptr<StreamManager> m_StreamManager;*/
+		/*static std::unique_ptr<StreamManager> m_StreamManager;*/
 	public:
 		RENDERER_API static std::shared_ptr<CDeviceResoureces> m_deviceResources;
 		RENDERER_API CRendererController(HWND mainWindow, unsigned int uwidth = 1600u, unsigned int uheight = 1024u);

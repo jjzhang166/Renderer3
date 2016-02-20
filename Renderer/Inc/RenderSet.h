@@ -22,8 +22,8 @@ namespace Renderer
 	class CRenderSet
 	{
 		typedef  bool(*CompareFunc)(const IRenderNode* const lhs, const IRenderNode* const rhs);
-		std::list<IRenderNode*> m_set;
 	public:
+		std::list<IRenderNode*> m_set;
 		RENDERER_API CRenderSet();
 		RENDERER_API ~CRenderSet();
 		RENDERER_API void AddtoHead(IRenderNode* node);

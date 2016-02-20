@@ -7,7 +7,6 @@
 * Author:
 * Purpose:
 ************************************************/
-#pragma once
 
 
 #include "RenderNode.h"
@@ -18,15 +17,19 @@ namespace Renderer
 	{
 		DirectX::XMFLOAT4X4 m_d3dViewMatrix;
 		DirectX::XMFLOAT4X4 m_d3dProjMatrix;
-		CRenderSet* m_opaqueShaderEffects;
-		CRenderSet* m_transparentRenderables;
+		std::unique_ptr<CRenderSet> m_opaqueShaderEffects;
+		std::unique_ptr<CRenderSet> m_transparentRenderables;
+
+		ID3D11RenderTargetView* m_MainRTVs;
+		ID3D11DepthStencilView* m_DepthView;
+		//State Ids
 		IRenderNode* currentShaderEffects;
 		IRenderNode* currentShaderPass;
 		IRenderNode* currentMaterial;
 		IRenderNode* currentRenderable;
-		eRenderState currentState = eRenderState::APPLYVIEW;
 	public:
-		CView();
+		eRenderState currentState;
+		CView(DirectX::XMFLOAT4X4 d3dViewMatrix, DirectX::XMFLOAT4X4 d3dProjMatrix);
 		~CView();
 		virtual void Begin(IRenderNode* pCurrentView);
 		virtual void End(IRenderNode* pCurrentView);
