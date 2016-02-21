@@ -23,6 +23,9 @@
     <Filter Include="Shaders\CelShadingPass">
       <UniqueIdentifier>{b053d06c-979d-46e7-bd80-e62181eeaf7f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Headers">
+      <UniqueIdentifier>{d055c977-e2ab-4fcc-af57-ba5b0c3ead54}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -70,6 +73,12 @@
     <ClInclude Include="Inc\Renderable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Inc\InputLayoutManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\SharedDefines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -105,6 +114,9 @@
     <ClCompile Include="Src\Renderable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\InputLayoutManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Inc\HLSL\VertexShader.hlsl">
@@ -125,5 +137,25 @@
     <FxCompile Include="Inc\HLSL\PixelShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Inc\HLSL\Vertex_POSNORDIFF.hlsl">
+      <Filter>Shaders\DummyVS</Filter>
+    </FxCompile>
+    <FxCompile Include="Inc\HLSL\Vertex_PosNorDiffUVTan.hlsl">
+      <Filter>Shaders\DummyVS</Filter>
+    </FxCompile>
+    <FxCompile Include="Inc\HLSL\Vertex_PosNorDiffUVTanBoneWeight.hlsl">
+      <Filter>Shaders\DummyVS</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Inc\HLSL\CommonShaderFunctions.hlsli">
+      <Filter>Shaders\Headers</Filter>
+    </None>
+    <None Include="Inc\HLSL\InputLayout.hlsli">
+      <Filter>Shaders\Headers</Filter>
+    </None>
+    <None Include="Inc\HLSL\Samplers.hlsli">
+      <Filter>Shaders\Headers</Filter>
+    </None>
   </ItemGroup>
 </Project>

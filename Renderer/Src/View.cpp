@@ -9,6 +9,7 @@
 #include "stdafx.h"
 #include "..\stdafx.h"
 #include "..\Inc\View.h"
+#include "..\Inc\RenderSet.h"
 #include "..\Inc\RendererController.h"
 
 using namespace std;
@@ -27,13 +28,13 @@ namespace Renderer
 	}
 
 
-	/*virtual*/ void CView::Begin(IRenderNode* pCurrentView)
+	/*virtual*/ void CView::Begin(IRenderNode* pCurrentView) /*final*/
 	{
 		currentState = VIEW_BEGIN;
 		CRendererController::m_deviceResources->GetD3DDeviceContext()->OMSetRenderTargets(1, &m_MainRTVs, m_DepthView);
 	}
 
-	/*virtual*/ void CView::End(IRenderNode* pCurrentView)
+	/*virtual*/ void CView::End(IRenderNode* pCurrentView) /*final*/
 	{
 		currentState = VIEW_END;
 		CRendererController::m_deviceResources->GetD3DDeviceContext()->OMSetRenderTargets(0, nullptr, nullptr);

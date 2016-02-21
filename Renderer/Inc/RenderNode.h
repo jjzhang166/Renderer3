@@ -12,7 +12,7 @@
 #else
 #define RENDERER_API __declspec(dllimport)
 #endif
-
+#include "SharedDefines.h"
 
 
 namespace Renderer

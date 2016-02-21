@@ -97,6 +97,7 @@
     </Link>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
+      <ObjectFileOutput>$(OutDir)CSO\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -115,6 +116,7 @@
     </Link>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
+      <ObjectFileOutput>$(OutDir)CSO\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -137,6 +139,7 @@
     </Link>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
+      <ObjectFileOutput>$(OutDir)CSO\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -159,6 +162,7 @@
     </Link>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
+      <ObjectFileOutput>$(OutDir)CSO\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -167,6 +171,7 @@
   <ItemGroup>
     <ClInclude Include="Inc\CommonStateObjects.h" />
     <ClInclude Include="Inc\DeviceResoureces.h" />
+    <ClInclude Include="Inc\InputLayoutManager.h" />
     <ClInclude Include="Inc\Material.h" />
     <ClInclude Include="Inc\Renderable.h" />
     <ClInclude Include="Inc\RendererController.h" />
@@ -175,6 +180,7 @@
     <ClInclude Include="Inc\ShaderEffect.h" />
     <ClInclude Include="Inc\ShaderHandle.h" />
     <ClInclude Include="Inc\ShaderPass.h" />
+    <ClInclude Include="Inc\SharedDefines.h" />
     <ClInclude Include="Inc\StepTimer.h" />
     <ClInclude Include="Inc\View.h" />
     <ClInclude Include="stdafx.h" />
@@ -197,6 +203,7 @@
     </ClCompile>
     <ClCompile Include="Src\CommonStateObjects.cpp" />
     <ClCompile Include="Src\DeviceResoureces.cpp" />
+    <ClCompile Include="Src\InputLayoutManager.cpp" />
     <ClCompile Include="Src\Material.cpp" />
     <ClCompile Include="Src\Renderable.cpp" />
     <ClCompile Include="Src\RendererController.cpp" />
@@ -268,11 +275,19 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="Inc\HLSL\Vertex_POSNORDIFF.hlsl" />
+    <FxCompile Include="Inc\HLSL\Vertex_PosNorDiffUVTan.hlsl" />
+    <FxCompile Include="Inc\HLSL\Vertex_PosNorDiffUVTanBoneWeight.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\DirectXTK\DirectXTK_Desktop_2015.vcxproj">
       <Project>{e0b52ae7-e160-4d32-bf3f-910b785e5a8e}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Inc\HLSL\CommonShaderFunctions.hlsli" />
+    <None Include="Inc\HLSL\InputLayout.hlsli" />
+    <None Include="Inc\HLSL\Samplers.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

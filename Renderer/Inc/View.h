@@ -31,7 +31,7 @@ namespace Renderer
 		eRenderState currentState;
 		CView(DirectX::XMFLOAT4X4 d3dViewMatrix, DirectX::XMFLOAT4X4 d3dProjMatrix);
 		~CView();
-		virtual void Begin(IRenderNode* pCurrentView);
-		virtual void End(IRenderNode* pCurrentView);
+		virtual void Begin(IRenderNode* pCurrentView) final;
+		virtual void End(IRenderNode* pCurrentView) final;
 	};
 }
