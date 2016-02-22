@@ -11,6 +11,7 @@
 #include "..\Inc\Renderable.h"
 #include "..\Inc\InputLayoutManager.h"
 #include "..\Inc\RendererController.h"
+#include "..\Inc\View.h"
 
 
 using namespace std;
@@ -21,7 +22,7 @@ namespace Renderer
 
 	CInputLayoutManager& CRenderable::m_pInputLayoutManager = CInputLayoutManager::GetRef();
 
-	CRenderable::CRenderable(CMaterial& material, XMFLOAT4X4 d3dWorldMatrix) :m_Material(material),
+	CRenderable::CRenderable(CMaterial& material, XMFLOAT4X4 d3dWorldMatrix, string fileName) : m_Material(material),
 		m_d3dWorldMatrix(d3dWorldMatrix),
 		m_Depth(0.0f),
 		m_uNumofIndices(0),
@@ -29,7 +30,16 @@ namespace Renderer
 		m_uStartIndex(0),
 		m_uStartVertex(0)
 	{
-		m_pInputLayoutManager.Initilize();
+		LoadModel(fileName);
+
+
+		D3D11_BUFFER_DESC bd;
+		ZeroMemory(&bd, sizeof(bd));
+		bd.Usage = D3D11_USAGE_DYNAMIC;
+		bd.ByteWidth = sizeof(XMFLOAT4X4);
+		bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		CRendererController::m_deviceResources->GetD3DDevice()->CreateBuffer(&bd, nullptr, m_d3dPerbjectConstantBuffer.GetAddressOf());
 	}
 
 
@@ -38,7 +48,7 @@ namespace Renderer
 		m_pInputLayoutManager.DeleteInstance();
 	}
 
-	void CRenderable::LoadModel(std::string fileName)
+	void CRenderable::LoadModel(string& fileName)
 	{
 		ifstream bin(fileName, ios_base::binary);
 		if (bin.is_open())
@@ -86,7 +96,9 @@ namespace Renderer
 						verts[eachVert].uvw = uvs[eachVert];
 					}
 
+					m_uNumofVertices = numOfVertices;
 
+					m_d3dVertexBuffer.Reset();
 					auto d3dDevicePtr = CRendererController::m_deviceResources->GetD3DDevice();
 					//Create Vertex Buffer
 					UINT startVertex = 0;
@@ -109,8 +121,8 @@ namespace Renderer
 					indices.resize(numOfIndices);
 					bin.read(reinterpret_cast<char*>(indices.data()), sizeof(unsigned int) *  numOfIndices);
 
-
-
+					m_uNumofIndices = numOfIndices;
+					m_d3dIndexBuffer.Reset();
 					//Create Index Buffer
 					D3D11_BUFFER_DESC inputBuffer_DESC;
 					ZeroMemory(&inputBuffer_DESC, sizeof(D3D11_BUFFER_DESC));
@@ -135,12 +147,53 @@ namespace Renderer
 	{
 		auto deviceContextPtr = CRendererController::m_deviceResources->GetD3DDeviceContext();
 		deviceContextPtr->IASetInputLayout(m_pInputLayoutManager.inputLayouts[CInputLayoutManager::eVertex_POSNORDIFF].Get());
+		unsigned int strid = sizeof(Vertex);
+		unsigned int offset = 0;
+		deviceContextPtr->IASetVertexBuffers(0, 1, m_d3dVertexBuffer.GetAddressOf(), &strid, &offset);
+		deviceContextPtr->IASetIndexBuffer(m_d3dIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+		deviceContextPtr->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		CView& view = (CView&)(*pCurrentView);
+		SetPerObjectData(view.ViewMatrix(), view.ProjectionMatrix());
+		deviceContextPtr->DrawIndexed(m_uNumofIndices,0,0);
 
 	}
 	/*virtual*/ void CRenderable::End(IRenderNode* pCurrentView) /*final*/
 	{
 		auto deviceContextPtr = CRendererController::m_deviceResources->GetD3DDeviceContext();
 		deviceContextPtr->IASetInputLayout(nullptr);
+		unsigned int strid = 0;
+		unsigned int offset = 0;
+		deviceContextPtr->IASetVertexBuffers(0, 0, nullptr, &strid, &offset);
+		deviceContextPtr->IASetIndexBuffer(nullptr, DXGI_FORMAT_R32_UINT, 0);
+		
 	}
 
+	float Randomfloat(float a, float b) {
+		float random = ((float)rand()) / (float)RAND_MAX;
+		float diff = b - a;
+		float r = random * diff;
+		return a + r;
+	}
+
+	void CRenderable::SetPerObjectData(DirectX::XMFLOAT4X4& view, DirectX::XMFLOAT4X4& proj)
+	{
+		auto vp = XMMatrixMultiply(XMLoadFloat4x4(&view),XMLoadFloat4x4(&proj));
+		XMFLOAT3 up(0.0f, 1.0f, 0.0f);
+		XMStoreFloat4x4(&m_d3dWorldMatrix, XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationAxis(XMLoadFloat3(&up), XMConvertToRadians(Randomfloat(-100.0f, 100.0f))) * XMMatrixTranslation(Randomfloat(-100.0f, 100.0f), Randomfloat(-100.0f, 100.0f), Randomfloat(-100.0f, 100.0f)));
+
+		auto mvp = XMMatrixMultiply(XMLoadFloat4x4(&m_d3dWorldMatrix), vp);
+		XMFLOAT4X4 mvp4x4;
+		XMStoreFloat4x4(&mvp4x4, mvp);
+
+
+		auto deviceContextPtr = CRendererController::m_deviceResources->GetD3DDeviceContext();
+
+		D3D11_MAPPED_SUBRESOURCE edit;
+		deviceContextPtr->Map(m_d3dPerbjectConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &edit);
+		memcpy(edit.pData, &mvp4x4, sizeof(mvp4x4));
+		deviceContextPtr->Unmap(m_d3dPerbjectConstantBuffer.Get(), 0);
+
+
+		deviceContextPtr->VSSetConstantBuffers(0, 1, m_d3dPerbjectConstantBuffer.GetAddressOf());
+	}
 }

@@ -13,7 +13,7 @@ namespace Renderer
 {
 	class CMaterial;
 	class CInputLayoutManager;
-	class CRenderable : IRenderNode
+	class CRenderable : public IRenderNode
 	{
 		struct _regAlign Vertex
 		{
@@ -31,13 +31,15 @@ namespace Renderer
 		unsigned int		m_uNumofIndices;
 		Microsoft::WRL::ComPtr<ID3D11Buffer>		m_d3dVertexBuffer;
 		Microsoft::WRL::ComPtr<ID3D11Buffer>		m_d3dIndexBuffer;
+		Microsoft::WRL::ComPtr<ID3D11Buffer>		m_d3dPerbjectConstantBuffer;
 
 		static CInputLayoutManager& m_pInputLayoutManager;
 	public:
-		CRenderable(CMaterial& material, DirectX::XMFLOAT4X4 d3dWorldMatrix);
+		CRenderable(CMaterial& material, DirectX::XMFLOAT4X4 d3dWorldMatrix, std::string fileName);
 		~CRenderable();
 		virtual void Begin(IRenderNode* pCurrentView) final;
 		virtual void End(IRenderNode* pCurrentView) final;
-		void LoadModel(std::string fileName);
+		void LoadModel(std::string& fileName);
+		void SetPerObjectData(DirectX::XMFLOAT4X4& view, DirectX::XMFLOAT4X4& proj);
 	};
 }

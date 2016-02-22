@@ -20,7 +20,7 @@ namespace Renderer
 
 	
 
-	class CMaterial : IRenderNode
+	class CMaterial : public IRenderNode
 	{
 		struct CMaterialInput
 		{
@@ -33,9 +33,9 @@ namespace Renderer
 			std::unordered_map<std::string, float> m_floatMap;
 		};
 
+	public:
 		std::unique_ptr<CRenderSet> m_shaderEffects;
 		std::unique_ptr<CRenderSet> m_renderables;
-	public:
 		CMaterialInput m_materialInput;
 		CMaterial();
 		~CMaterial();

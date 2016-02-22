@@ -32,10 +32,10 @@ namespace Renderer
 
 
 	public:
-		CShaderPass(ID3D11Device* d3dDevice, unsigned int blendState = 0, unsigned int depthStencilState = 1, unsigned int rasterizerStates = 2);
+		CShaderPass(ID3D11Device* d3dDevice, unsigned int blendState = 0, unsigned int depthStencilState = 1, unsigned int rasterizerStates = 0);
 		CShaderPass(ID3D11Device* d3dDevice,
 			const char* vs_file, const char* ps_file, const char* hs_file, const char* ds_file, const char* gs_file,
-			unsigned int blendState = 0, unsigned int depthStencilState = 1, unsigned int rasterizerStates = 2);
+			unsigned int blendState = 0, unsigned int depthStencilState = 1, unsigned int rasterizerStates = 0);
 		~CShaderPass();
 
 		virtual void Begin(IRenderNode* pCurrentView) final;

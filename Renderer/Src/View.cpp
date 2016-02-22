@@ -16,7 +16,7 @@ using namespace std;
 using namespace DirectX;
 namespace Renderer
 {
-	CView::CView(XMFLOAT4X4 d3dViewMatrix, XMFLOAT4X4 d3dProjMatrix) : m_d3dViewMatrix(d3dViewMatrix),m_d3dProjMatrix(d3dProjMatrix)
+	CView::CView(XMFLOAT4X4 d3dViewMatrix, XMFLOAT4X4 d3dProjMatrix) : m_d3dViewMatrix(d3dViewMatrix),m_d3dProjMatrix(d3dProjMatrix), m_opaqueShaderEffects(new CRenderSet)
 	{
 		m_MainRTVs = CRendererController::m_deviceResources->GetBackBufferRenderTargetView();
 		m_DepthView = CRendererController::m_deviceResources->GetDepthStencilView();

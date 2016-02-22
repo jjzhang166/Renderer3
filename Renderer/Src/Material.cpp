@@ -25,7 +25,7 @@ namespace Renderer
 
 	/*virtual*/ void CMaterial::Begin(IRenderNode* pCurrentView) /*final*/
 	{
-		CView& view = *((CView*)pCurrentView);
+		CView& view = (CView&)(*pCurrentView);
 		view.currentState = MATERIAL_BEGIN;
 	}
 
@@ -33,7 +33,7 @@ namespace Renderer
 	/*virtual*/ void CMaterial::End(IRenderNode* pCurrentView) /*final*/
 	{
 		
-		CView& view = *((CView*)pCurrentView);
+		CView& view = (CView&)(*pCurrentView);
 		view.currentState = MATERIAL_END;
 	}
 	

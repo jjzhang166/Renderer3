@@ -107,9 +107,10 @@ namespace Renderer
 		{
 			deviceContext->DSSetShader(m_pDomainShader->m_shader.Get(), nullptr, 0);
 		}
-		deviceContext->OMSetBlendState(CCommonStateObjects::m_blendStates[m_blendState], nullptr, 0xffffffff);
-		deviceContext->OMSetDepthStencilState(CCommonStateObjects::m_depthStencilStates[m_depthStencilState], 0);
-		deviceContext->RSSetState(CCommonStateObjects::m_rasterizerStates[m_rasterizerStates]);
+		static CCommonStateObjects commonState;
+		deviceContext->OMSetBlendState(commonState.m_blendStates[m_blendState], nullptr, 0xffffffff);
+		deviceContext->OMSetDepthStencilState(commonState.m_depthStencilStates[m_depthStencilState], 0);
+		deviceContext->RSSetState(commonState.m_rasterizerStates[m_rasterizerStates]);
 	}
 	/*virtual*/ void CShaderPass::End(IRenderNode* pCurrentView) /*final*/
 	{

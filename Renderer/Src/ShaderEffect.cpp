@@ -24,13 +24,15 @@ namespace Renderer
 
 	/*virtual*/ void CShaderEffect::Begin(IRenderNode* pCurrentView) /*final*/
 	{
-		CView& view = *((CView*)pCurrentView);
+		CView& view = (CView&)(*pCurrentView);
 		view.currentState = SHADEREFFECT_BEGIN;
+		m_ShaderPasses->m_set.front()->Begin(pCurrentView);
 
 	}
 	/*virtual*/ void CShaderEffect::End(IRenderNode* pCurrentView) /*final*/
 	{
-		CView& view = *((CView*)pCurrentView);
-		view.currentState = SHADEREFFECT_END;;
+		CView& view = (CView&)(*pCurrentView);
+		view.currentState = SHADEREFFECT_END;
+		m_ShaderPasses->m_set.front()->End(pCurrentView);
 	}
 }
