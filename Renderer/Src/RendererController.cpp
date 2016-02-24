@@ -40,6 +40,10 @@ namespace Renderer
 		m_deviceResources = std::make_shared<CDeviceResoureces>(mainWindow, uwidth, uheight);
 		m_bInstantiated = true;
 
+		TwInit(TW_DIRECT3D11, m_deviceResources->GetD3DDevice());
+		bar = TwNewBar("TweakBar");
+
+
 		CInputLayoutManager::GetRef().Initilize();
 		XMFLOAT3 up(0.0f, 1.0f, 0.0f);
 		XMFLOAT3 side(1.0f, 0.0f, 0.0f);
@@ -62,7 +66,7 @@ namespace Renderer
 		//m_Material->m_renderables->AddtoHead(new CRenderable(*m_Material, world4x4, "test.mesh"));
 		XMFLOAT4X4 world4x4;
 		srand(time(nullptr));
-		for (size_t i = 0; i < 10000; i++)
+		for (size_t i = 0; i < 1; i++)
 		{
 
 			XMStoreFloat4x4(&world4x4, XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationAxis(XMLoadFloat3(&up), XMConvertToRadians(RandomFloat(-100.0f, 100.0f))) * XMMatrixTranslation(RandomFloat(-100.0f, 100.0f), RandomFloat(-100.0f, 100.0f), RandomFloat(-100.0f, 100.0f)));
@@ -75,6 +79,7 @@ namespace Renderer
 	{
 		//Release Device Resources
 		m_deviceResources.reset();
+		TwTerminate();
 	}
 
 	void CRendererController::Draw()
@@ -103,12 +108,12 @@ namespace Renderer
 			}
 			SEptr->End(m_View);
 		}
+		TwDraw();
 		m_View->End(m_View);
 
+		
 
 
-
-		m_deviceResources->Present();
 	}
 
 

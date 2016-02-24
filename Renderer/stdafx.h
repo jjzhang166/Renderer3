@@ -36,6 +36,7 @@
 
 
 
+
 #ifdef _DEBUG
 	// Check for SDK Layer support.
 inline bool SdkLayersAvailable()

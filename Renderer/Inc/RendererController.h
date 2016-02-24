@@ -14,6 +14,8 @@
 #endif
 
 #include "DeviceResoureces.h"
+#include <AntTweakBar.h>
+
 namespace Renderer
 {
 
@@ -21,6 +23,7 @@ namespace Renderer
 	class CView;
 	class CShaderEffect;
 	class CMaterial;
+
 	class CRendererController
 	{
 		static bool m_bInstantiated;
@@ -28,6 +31,7 @@ namespace Renderer
 		CView* m_View;
 		CShaderEffect* m_ShaderEffect;
 		CMaterial* m_Material;
+		TwBar* bar;
 	public:
 		RENDERER_API static std::shared_ptr<CDeviceResoureces> m_deviceResources;
 		RENDERER_API CRendererController(HWND mainWindow, unsigned int uwidth = 1920u, unsigned int uheight = 1080u);

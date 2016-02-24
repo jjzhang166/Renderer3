@@ -3,7 +3,8 @@
 
 #include "stdafx.h"
 #include "RenderWindow.h"
-#include<RendererController.h>
+#include <RendererController.h>
+
 
 #define MAX_LOADSTRING 100
 
@@ -18,6 +19,14 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+
+
+
+
+
+
+
+
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -44,6 +53,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 	Renderer::CRendererController instance(mainWindow);
+
+
+
+
+
 	while (true)
 	{
 		// Main message loop:
@@ -58,8 +72,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		if (msg.message == WM_QUIT)
 			break;
 		instance.Draw();
+		
+		instance.m_deviceResources->Present();
 	}
    
+	
 
     return (int) msg.wParam;
 }
@@ -132,6 +149,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	
+	if (TwEventWin(hWnd, message, wParam, lParam))
+		return 0; // Event has been handled by AntTweakBar
+
     switch (message)
     {
     case WM_COMMAND:

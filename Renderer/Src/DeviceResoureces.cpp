@@ -163,7 +163,7 @@ namespace Renderer
 			swapChainDesc.SampleDesc.Count = 1;								// Don't use multi-sampling.
 			swapChainDesc.SampleDesc.Quality = 0;
 			swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-			swapChainDesc.BufferCount = 2;									// Use double-buffering to minimize latency.
+			swapChainDesc.BufferCount = 1;									// Use double-buffering to minimize latency.
 			swapChainDesc.Flags = 0;
 			swapChainDesc.OutputWindow = m_window;
 			swapChainDesc.Windowed = true;
