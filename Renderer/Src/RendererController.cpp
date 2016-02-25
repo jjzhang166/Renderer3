@@ -7,6 +7,10 @@
 * Purpose:
 ************************************************/
 #include "stdafx.h"
+#ifdef _DEBUG
+#include <vld.h>
+#endif // _DEBUG
+
 #include "..\stdafx.h"
 #include "..\Inc\RendererController.h"
 #include "..\Inc\ShaderEffect.h"
@@ -39,16 +43,19 @@ namespace Renderer
 	CRendererController::CRendererController(HWND mainWindow, unsigned int uwidth, unsigned int uheight) :
 		m_View(nullptr),
 		m_ShaderEffect(nullptr),
-		m_Material(nullptr),
-		m_TweakBar(nullptr)
+		m_Material(nullptr)
 	{
 		assert(!m_bInstantiated && "Only one CRendererController instance is allowed.");
 		m_deviceResources = std::make_shared<CDeviceResoureces>(mainWindow, uwidth, uheight);
 		m_bInstantiated = true;
 
+
+#ifdef _DEBUG
 		TwInit(TW_DIRECT3D11, m_deviceResources->GetD3DDevice());
 		m_TweakBar = TwNewBar("TweakBar");
-
+		int barSize[2] = { 500, 400 };
+		TwSetParam(m_TweakBar, NULL, "size", TW_PARAM_INT32, 2, barSize);
+#endif // _DEBUG
 
 		CInputLayoutManager::GetRef().Initilize();
 		m_CommonState = unique_ptr<CCommonStateObjects>(new CCommonStateObjects);
@@ -76,7 +83,7 @@ namespace Renderer
 		//m_Material->m_renderables->AddtoHead(new CRenderable(*m_Material, world4x4, "test.mesh"));
 		XMFLOAT4X4 world4x4;
 		//srand(static_cast<unsigned int>(time(nullptr)));
-		for (size_t i = 0; i < 1000; i++)
+		for (size_t i = 0; i < 10; i++)
 		{
 
 			XMStoreFloat4x4(&world4x4, XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationAxis(XMLoadFloat3(&up), XMConvertToRadians(RandomFloat(-100.0f, 100.0f))) * XMMatrixTranslation(RandomFloat(-100.0f, 100.0f), RandomFloat(-100.0f, 100.0f), RandomFloat(-100.0f, 100.0f)));
@@ -87,11 +94,14 @@ namespace Renderer
 
 	CRendererController::~CRendererController()
 	{
-		//Release Device Resources
+
+#ifdef _DEBUG
 		TwTerminate();
+#endif // _DEBUG
+
 		m_CommonState.reset();
 
-
+		//D3D debug memory leak report
 		/*Microsoft::WRL::ComPtr<ID3D11Debug> pDebug;
 		m_deviceResources->GetD3DDevice()->QueryInterface(IID_PPV_ARGS(&pDebug));
 		if (pDebug != nullptr)
@@ -100,6 +110,8 @@ namespace Renderer
 			pDebug = nullptr;
 		}*/
 
+
+		//Release Device Resources
 		m_deviceResources.reset();
 
 	}
@@ -130,7 +142,9 @@ namespace Renderer
 			}
 			SEptr->End(m_View.get());
 		}
+#ifdef _DEBUG
 		TwDraw();
+#endif // _DEBUG
 		m_View->End(m_View.get());
 
 
@@ -138,9 +152,10 @@ namespace Renderer
 
 	}
 
-
-	void CRendererController::CreateDeviceResources()
+#ifdef _DEBUG
+	int CRendererController::TweakBarEventWin(HWND& wnd, UINT& msg, WPARAM& wParam, LPARAM& lParam)
 	{
-
+		return TwEventWin(wnd, msg, wParam, lParam);
 	}
+#endif // _DEBUG
 }

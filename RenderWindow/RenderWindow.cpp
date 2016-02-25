@@ -4,6 +4,9 @@
 #include "stdafx.h"
 #include "RenderWindow.h"
 #include <RendererController.h>
+#ifdef _DEBUG
+#include <vld.h>
+#endif // _DEBUG
 
 
 #define MAX_LOADSTRING 100
@@ -21,7 +24,7 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 
-
+std::unique_ptr<Renderer::CRendererController> instance = nullptr;
 
 
 
@@ -52,7 +55,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_RENDERWINDOW));
 
     MSG msg;
-	Renderer::CRendererController instance(mainWindow);
+	instance = std::unique_ptr<Renderer::CRendererController>(new Renderer::CRendererController(mainWindow));
 
 
 
@@ -71,9 +74,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		if (msg.message == WM_QUIT)
 			break;
-		instance.Draw();
-		
-		instance.m_deviceResources->Present();
+		instance->Draw();
+		instance->m_deviceResources->Present();
 	}
    
 	
@@ -150,7 +152,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	
-	if (TwEventWin(hWnd, message, wParam, lParam))
+	if (instance->TweakBarEventWin(hWnd, message, wParam, lParam))
 		return 0; // Event has been handled by AntTweakBar
 
     switch (message)
