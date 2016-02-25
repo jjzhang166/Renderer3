@@ -31,7 +31,7 @@ namespace Renderer
 			std::unordered_map<unsigned int, ID3D11ShaderResourceView*> m_textureMap;
 			std::unordered_map<std::string, DirectX::XMFLOAT3> m_vector3Map;
 			std::unordered_map<std::string, float> m_floatMap;
-		};
+		} m_MaterialInput;
 
 	public:
 		std::unique_ptr<CRenderSet> m_shaderEffects;

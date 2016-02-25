@@ -15,6 +15,7 @@
 namespace Renderer
 {
 	CInputLayoutManager* CInputLayoutManager::instancePtr = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout>	 CInputLayoutManager::inputLayouts[eVetex_MAX];
 
 	CInputLayoutManager& CInputLayoutManager::GetRef()
 	{
@@ -28,6 +29,10 @@ namespace Renderer
 
 	 void CInputLayoutManager::DeleteInstance()
 	 {
+		 for (size_t i = 0; i < eVetex_MAX; i++)
+		 {
+			 inputLayouts[i].Reset();
+		 }
 		 delete instancePtr;
 		 instancePtr = nullptr;
 	 }

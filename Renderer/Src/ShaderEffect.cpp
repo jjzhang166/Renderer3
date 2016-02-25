@@ -20,19 +20,29 @@ namespace Renderer
 
 	CShaderEffect::~CShaderEffect()
 	{
+		for (auto& eachShaderPass : m_ShaderPasses->m_set)
+		{
+			delete eachShaderPass;
+		}
 	}
 
 	/*virtual*/ void CShaderEffect::Begin(IRenderNode* pCurrentView) /*final*/
 	{
 		CView& view = (CView&)(*pCurrentView);
 		view.currentState = SHADEREFFECT_BEGIN;
-		m_ShaderPasses->m_set.front()->Begin(pCurrentView);
+		for (auto& eachShaderPass : m_ShaderPasses->m_set)
+		{
+			eachShaderPass->Begin(pCurrentView);
+		}
 
 	}
 	/*virtual*/ void CShaderEffect::End(IRenderNode* pCurrentView) /*final*/
 	{
 		CView& view = (CView&)(*pCurrentView);
 		view.currentState = SHADEREFFECT_END;
-		m_ShaderPasses->m_set.front()->End(pCurrentView);
+		for (auto& eachShaderPass : m_ShaderPasses->m_set)
+		{
+			eachShaderPass->End(pCurrentView);
+		}
 	}
 }

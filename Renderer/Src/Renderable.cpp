@@ -45,6 +45,9 @@ namespace Renderer
 
 	CRenderable::~CRenderable()
 	{
+		m_d3dVertexBuffer.Reset();
+		m_d3dIndexBuffer.Reset();
+		m_d3dPerbjectConstantBuffer.Reset();
 		m_pInputLayoutManager.DeleteInstance();
 	}
 
@@ -145,7 +148,7 @@ namespace Renderer
 
 	/*virtual*/ void CRenderable::Begin(IRenderNode* pCurrentView) /*final*/
 	{
-		auto deviceContextPtr = CRendererController::m_deviceResources->GetD3DDeviceContext();
+		static auto deviceContextPtr = CRendererController::m_deviceResources->GetD3DDeviceContext();
 		deviceContextPtr->IASetInputLayout(m_pInputLayoutManager.inputLayouts[CInputLayoutManager::eVertex_POSNORDIFF].Get());
 		unsigned int strid = sizeof(Vertex);
 		unsigned int offset = 0;
@@ -159,7 +162,7 @@ namespace Renderer
 	}
 	/*virtual*/ void CRenderable::End(IRenderNode* pCurrentView) /*final*/
 	{
-		auto deviceContextPtr = CRendererController::m_deviceResources->GetD3DDeviceContext();
+		static auto deviceContextPtr = CRendererController::m_deviceResources->GetD3DDeviceContext();
 		deviceContextPtr->IASetInputLayout(nullptr);
 		unsigned int strid = 0;
 		unsigned int offset = 0;

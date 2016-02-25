@@ -15,6 +15,7 @@
 #include "..\Inc\Material.h"
 #include "..\Inc\View.h"
 #include "..\Inc\InputLayoutManager.h"
+#include "..\Inc\CommonStateObjects.h"
 #include "..\Inc\Renderable.h"
 
 using namespace DirectX;
@@ -31,20 +32,29 @@ namespace Renderer
 
 	bool CRendererController::m_bInstantiated = false;
 	std::shared_ptr<CDeviceResoureces> CRendererController::m_deviceResources;
+	std::unique_ptr<CCommonStateObjects> CRendererController::m_CommonState;
 	/*std::unique_ptr<StreamManager> CRendererController::m_StreamManager;*/
 
 
-	CRendererController::CRendererController(HWND mainWindow, unsigned int uwidth, unsigned int uheight) : m_View(nullptr)
+	CRendererController::CRendererController(HWND mainWindow, unsigned int uwidth, unsigned int uheight) :
+		m_View(nullptr),
+		m_ShaderEffect(nullptr),
+		m_Material(nullptr),
+		m_TweakBar(nullptr)
 	{
 		assert(!m_bInstantiated && "Only one CRendererController instance is allowed.");
 		m_deviceResources = std::make_shared<CDeviceResoureces>(mainWindow, uwidth, uheight);
 		m_bInstantiated = true;
 
 		TwInit(TW_DIRECT3D11, m_deviceResources->GetD3DDevice());
-		bar = TwNewBar("TweakBar");
+		m_TweakBar = TwNewBar("TweakBar");
 
 
 		CInputLayoutManager::GetRef().Initilize();
+		m_CommonState = unique_ptr<CCommonStateObjects>(new CCommonStateObjects);
+
+
+
 		XMFLOAT3 up(0.0f, 1.0f, 0.0f);
 		XMFLOAT3 side(1.0f, 0.0f, 0.0f);
 		XMFLOAT3 forward(0.0f, 0.0f, -1.0f);
@@ -55,18 +65,18 @@ namespace Renderer
 		XMFLOAT4X4 view4x4, proj4x4;
 		XMStoreFloat4x4(&view4x4, view);
 		XMStoreFloat4x4(&proj4x4, proj);
-		m_View = new CView(view4x4, proj4x4);
+		m_View = unique_ptr<CView>(new CView(view4x4, proj4x4));
 		m_View->m_MainRTVs = m_deviceResources->GetBackBufferRenderTargetView();
 		m_View->m_DepthView = m_deviceResources->GetDepthStencilView();
-		m_ShaderEffect = new CShaderEffect();
-		m_View->m_opaqueShaderEffects->AddtoHead(m_ShaderEffect);
+		m_ShaderEffect = unique_ptr<CShaderEffect>(new CShaderEffect());
+		m_View->m_opaqueShaderEffects->AddtoHead(m_ShaderEffect.get());
 		m_ShaderEffect->m_ShaderPasses->AddtoHead(new CShaderPass(m_deviceResources->GetD3DDevice(), "CSO\\VertexShader.cso", "CSO\\PixelShader.cso", nullptr, nullptr, nullptr, 0, 1, 2));
-		m_Material = new CMaterial();
-		m_ShaderEffect->m_Materials->AddtoHead(m_Material);
+		m_Material = unique_ptr<CMaterial>(new CMaterial());
+		m_ShaderEffect->m_Materials->AddtoHead(m_Material.get());
 		//m_Material->m_renderables->AddtoHead(new CRenderable(*m_Material, world4x4, "test.mesh"));
 		XMFLOAT4X4 world4x4;
-		srand(time(nullptr));
-		for (size_t i = 0; i < 1; i++)
+		//srand(static_cast<unsigned int>(time(nullptr)));
+		for (size_t i = 0; i < 1000; i++)
 		{
 
 			XMStoreFloat4x4(&world4x4, XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationAxis(XMLoadFloat3(&up), XMConvertToRadians(RandomFloat(-100.0f, 100.0f))) * XMMatrixTranslation(RandomFloat(-100.0f, 100.0f), RandomFloat(-100.0f, 100.0f), RandomFloat(-100.0f, 100.0f)));
@@ -78,8 +88,20 @@ namespace Renderer
 	CRendererController::~CRendererController()
 	{
 		//Release Device Resources
-		m_deviceResources.reset();
 		TwTerminate();
+		m_CommonState.reset();
+
+
+		/*Microsoft::WRL::ComPtr<ID3D11Debug> pDebug;
+		m_deviceResources->GetD3DDevice()->QueryInterface(IID_PPV_ARGS(&pDebug));
+		if (pDebug != nullptr)
+		{
+			pDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+			pDebug = nullptr;
+		}*/
+
+		m_deviceResources.reset();
+
 	}
 
 	void CRendererController::Draw()
@@ -89,29 +111,29 @@ namespace Renderer
 		d3dDeviceContext->ClearRenderTargetView(m_deviceResources->GetBackBufferRenderTargetView(), clearClor);
 		d3dDeviceContext->ClearDepthStencilView(m_deviceResources->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 1);
 
-		m_View->Begin(m_View);
+		m_View->Begin(m_View.get());
 		for (auto eachShaderEffect : m_View->m_opaqueShaderEffects->m_set)
 		{
 			CShaderEffect* SEptr = (CShaderEffect*)eachShaderEffect;
-			SEptr->Begin(m_View);
+			SEptr->Begin(m_View.get());
 			for (auto eachMateial : SEptr->m_Materials->m_set)
 			{
 				CMaterial* MATptr = (CMaterial*)eachMateial;
-				MATptr->Begin(m_View);
+				MATptr->Begin(m_View.get());
 				for (auto eachRenderable : MATptr->m_renderables->m_set)
 				{
 					CRenderable* RENptr = (CRenderable*)eachRenderable;
-					RENptr->Begin(m_View);
-					RENptr->End(m_View);
+					RENptr->Begin(m_View.get());
+					RENptr->End(m_View.get());
 				}
-				MATptr->End(m_View);
+				MATptr->End(m_View.get());
 			}
-			SEptr->End(m_View);
+			SEptr->End(m_View.get());
 		}
 		TwDraw();
-		m_View->End(m_View);
+		m_View->End(m_View.get());
 
-		
+
 
 
 	}

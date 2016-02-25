@@ -23,17 +23,19 @@ namespace Renderer
 	class CView;
 	class CShaderEffect;
 	class CMaterial;
-
+	class CCommonStateObjects;
 	class CRendererController
 	{
 		static bool m_bInstantiated;
 		/*static std::unique_ptr<StreamManager> m_StreamManager;*/
-		CView* m_View;
-		CShaderEffect* m_ShaderEffect;
-		CMaterial* m_Material;
-		TwBar* bar;
+		std::unique_ptr<CView> m_View;
+		std::unique_ptr<CShaderEffect> m_ShaderEffect;
+		std::unique_ptr<CMaterial> m_Material;
+		TwBar* m_TweakBar;
+		
 	public:
 		RENDERER_API static std::shared_ptr<CDeviceResoureces> m_deviceResources;
+		static std::unique_ptr<CCommonStateObjects> m_CommonState;
 		RENDERER_API CRendererController(HWND mainWindow, unsigned int uwidth = 1920u, unsigned int uheight = 1080u);
 		RENDERER_API ~CRendererController();
 		RENDERER_API void CreateDeviceResources();

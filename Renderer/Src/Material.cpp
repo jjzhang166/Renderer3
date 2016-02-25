@@ -21,6 +21,10 @@ namespace Renderer
 
 	CMaterial::~CMaterial()
 	{
+		for (auto& eachRenderable : m_renderables->m_set)
+		{
+			delete eachRenderable;
+		}
 	}
 
 	/*virtual*/ void CMaterial::Begin(IRenderNode* pCurrentView) /*final*/

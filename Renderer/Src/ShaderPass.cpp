@@ -14,7 +14,7 @@
 #include "..\Inc\CommonStateObjects.h"
 namespace Renderer
 {
-
+	
 	CShaderPass::CShaderPass(ID3D11Device* d3dDevice, unsigned int blendState, unsigned int depthStencilState, unsigned int rasterizerStates) :
 		m_blendState(blendState),
 		m_depthStencilState(depthStencilState),
@@ -24,8 +24,10 @@ namespace Renderer
 		m_pHullShader(nullptr),
 		m_pDomainShader(nullptr),
 		m_pGeometryShader(nullptr)
+		
 
 	{
+	
 	}
 
 	CShaderPass::CShaderPass(ID3D11Device* d3dDevice,
@@ -36,6 +38,7 @@ namespace Renderer
 		m_rasterizerStates(rasterizerStates)
 
 	{
+		
 		if (vs_file)
 		{
 			m_pVertexShader = new CShaderHandle<ID3D11VertexShader>(d3dDevice, vs_file);
@@ -86,7 +89,7 @@ namespace Renderer
 
 	/*virtual*/ void CShaderPass::Begin(IRenderNode* pCurrentView) /*final*/
 	{
-		auto deviceContext = CRendererController::m_deviceResources->GetD3DDeviceContext();
+		static auto deviceContext = CRendererController::m_deviceResources->GetD3DDeviceContext();
 		if (m_pVertexShader)
 		{
 			deviceContext->VSSetShader(m_pVertexShader->m_shader.Get(), nullptr, 0);
@@ -107,14 +110,14 @@ namespace Renderer
 		{
 			deviceContext->DSSetShader(m_pDomainShader->m_shader.Get(), nullptr, 0);
 		}
-		static CCommonStateObjects commonState;
-		deviceContext->OMSetBlendState(commonState.m_blendStates[m_blendState], nullptr, 0xffffffff);
-		deviceContext->OMSetDepthStencilState(commonState.m_depthStencilStates[m_depthStencilState], 0);
-		deviceContext->RSSetState(commonState.m_rasterizerStates[m_rasterizerStates]);
+		auto& m_CommonState = *CRendererController::CRendererController::m_CommonState;
+		deviceContext->OMSetBlendState(m_CommonState.m_blendStates[m_blendState], nullptr, 0xffffffff);
+		deviceContext->OMSetDepthStencilState(m_CommonState.m_depthStencilStates[m_depthStencilState], 0);
+		deviceContext->RSSetState(m_CommonState.m_rasterizerStates[m_rasterizerStates]);
 	}
 	/*virtual*/ void CShaderPass::End(IRenderNode* pCurrentView) /*final*/
 	{
-		auto deviceContext = CRendererController::m_deviceResources->GetD3DDeviceContext();
+		static auto deviceContext = CRendererController::m_deviceResources->GetD3DDeviceContext();
 
 		deviceContext->VSSetShader(nullptr, nullptr, 0);
 		deviceContext->PSSetShader(nullptr, nullptr, 0);

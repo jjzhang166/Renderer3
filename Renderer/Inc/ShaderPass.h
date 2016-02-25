@@ -14,7 +14,6 @@
 namespace Renderer
 {
 	template<typename Shadertype> class CShaderHandle;
-
 	class CShaderPass : public IRenderNode
 	{
 
@@ -23,6 +22,7 @@ namespace Renderer
 		unsigned int m_depthStencilState;
 		unsigned int m_rasterizerStates;
 
+		
 		//Shaders
 		CShaderHandle<ID3D11VertexShader>*		m_pVertexShader = nullptr;
 		CShaderHandle<ID3D11PixelShader>*		m_pPixelShader = nullptr;

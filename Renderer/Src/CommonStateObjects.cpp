@@ -160,5 +160,12 @@ namespace Renderer
 				rs->Release();
 			}
 		}
+		for (auto& ss : m_samplerStates)
+		{
+			if (ss)
+			{
+				ss->Release();
+			}
+		}
 	}
 }

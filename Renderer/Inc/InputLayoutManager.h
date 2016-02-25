@@ -25,7 +25,7 @@ namespace Renderer
 			eVertex_PosNorDiffUVTanBoneWeight,
 			eVetex_MAX,
 		};
-		Microsoft::WRL::ComPtr<ID3D11InputLayout>	 inputLayouts[eVetex_MAX];
+		static Microsoft::WRL::ComPtr<ID3D11InputLayout>	 inputLayouts[eVetex_MAX];
 		
 		static CInputLayoutManager& GetRef();
 		void Initilize();
