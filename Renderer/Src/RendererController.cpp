@@ -12,6 +12,7 @@
 #endif // _DEBUG
 
 #include "..\stdafx.h"
+#include <DDSTextureLoader.h>
 #include "..\Inc\RendererController.h"
 #include "..\Inc\ShaderEffect.h"
 #include "..\Inc\RenderSet.h"
@@ -37,6 +38,11 @@ namespace Renderer
 	bool CRendererController::m_bInstantiated = false;
 	std::shared_ptr<CDeviceResoureces> CRendererController::m_deviceResources;
 	std::unique_ptr<CCommonStateObjects> CRendererController::m_CommonState;
+
+#ifdef _DEBUG
+	TwBar* CRendererController::m_TweakBar;
+#endif // _DEBUG
+
 	/*std::unique_ptr<StreamManager> CRendererController::m_StreamManager;*/
 
 
@@ -59,7 +65,13 @@ namespace Renderer
 
 		CInputLayoutManager::GetRef().Initilize();
 		m_CommonState = unique_ptr<CCommonStateObjects>(new CCommonStateObjects);
-
+		//Bind all samplers
+		auto deviceContext = m_deviceResources->GetD3DDeviceContext();
+		deviceContext->VSSetSamplers(0, CCommonStateObjects::COUNT_SS, m_CommonState->m_samplerStates);
+		deviceContext->PSSetSamplers(0, CCommonStateObjects::COUNT_SS, m_CommonState->m_samplerStates);
+		deviceContext->HSSetSamplers(0, CCommonStateObjects::COUNT_SS, m_CommonState->m_samplerStates);
+		deviceContext->GSSetSamplers(0, CCommonStateObjects::COUNT_SS, m_CommonState->m_samplerStates);
+		deviceContext->DSSetSamplers(0, CCommonStateObjects::COUNT_SS, m_CommonState->m_samplerStates);
 
 
 		XMFLOAT3 up(0.0f, 1.0f, 0.0f);
@@ -73,22 +85,30 @@ namespace Renderer
 		XMStoreFloat4x4(&view4x4, view);
 		XMStoreFloat4x4(&proj4x4, proj);
 		m_View = unique_ptr<CView>(new CView(view4x4, proj4x4));
-		m_View->m_MainRTVs = m_deviceResources->GetBackBufferRenderTargetView();
-		m_View->m_DepthView = m_deviceResources->GetDepthStencilView();
-		m_ShaderEffect = unique_ptr<CShaderEffect>(new CShaderEffect());
-		m_View->m_opaqueShaderEffects->AddtoHead(m_ShaderEffect.get());
-		m_ShaderEffect->m_ShaderPasses->AddtoHead(new CShaderPass(m_deviceResources->GetD3DDevice(), "CSO\\VertexShader.cso", "CSO\\PixelShader.cso", nullptr, nullptr, nullptr, 0, 1, 2));
-		m_Material = unique_ptr<CMaterial>(new CMaterial());
-		m_ShaderEffect->m_Materials->AddtoHead(m_Material.get());
-		//m_Material->m_renderables->AddtoHead(new CRenderable(*m_Material, world4x4, "test.mesh"));
-		XMFLOAT4X4 world4x4;
-		//srand(static_cast<unsigned int>(time(nullptr)));
-		for (size_t i = 0; i < 10; i++)
-		{
+		m_View->AddaRTV(m_deviceResources->GetBackBufferRenderTargetView());
+		m_View->SetDepthView(m_deviceResources->GetDepthStencilView());
 
-			XMStoreFloat4x4(&world4x4, XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationAxis(XMLoadFloat3(&up), XMConvertToRadians(RandomFloat(-100.0f, 100.0f))) * XMMatrixTranslation(RandomFloat(-100.0f, 100.0f), RandomFloat(-100.0f, 100.0f), RandomFloat(-100.0f, 100.0f)));
-			m_Material->m_renderables->AddtoHead(new CRenderable(*m_Material, world4x4, "Teddy_Idle.mesh"));
+
+
+		m_ShaderEffect = new CShaderEffect();
+		m_View->GetOpaqueShaderEffects()->AddtoHead(m_ShaderEffect);
+		m_ShaderEffect->m_ShaderPass = unique_ptr<CShaderPass>(new CShaderPass(m_deviceResources->GetD3DDevice(), "CSO\\VertexShader.cso", "CSO\\PixelShader.cso", nullptr, nullptr, nullptr, 0, 1, 2));
+		m_Material = new CMaterial();
+		ID3D11ShaderResourceView* testSRV = nullptr;
+		DirectX::CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"Teddy_D.dds", nullptr, &testSRV);
+		m_Material->AddMap(0, testSRV);
+		m_ShaderEffect->m_Materials->AddtoHead(m_Material);
+		XMFLOAT4X4 world4x4;
+		for (size_t i = 0; i < 1; i++)
+		{
+			XMStoreFloat4x4(&world4x4, XMMatrixIdentity());
+			auto newRenderable = new CRenderable(*m_Material, world4x4, "Teddy_Idle.mesh");
+			m_Renderables.push_back(newRenderable);
+			m_Material->m_Renderables->AddtoHead(newRenderable);
 		}
+
+
+
 	}
 
 
@@ -99,17 +119,24 @@ namespace Renderer
 		TwTerminate();
 #endif // _DEBUG
 
-		m_CommonState.reset();
+		m_CommonState.reset(nullptr);
+		delete m_ShaderEffect;
+		delete m_Material;
+		for (auto& eachRenderable : m_Renderables)
+		{
+			delete eachRenderable;
+		}
+		////D3D debug memory leak report
 
-		//D3D debug memory leak report
+
 		/*Microsoft::WRL::ComPtr<ID3D11Debug> pDebug;
 		m_deviceResources->GetD3DDevice()->QueryInterface(IID_PPV_ARGS(&pDebug));
 		if (pDebug != nullptr)
 		{
 			pDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
 			pDebug = nullptr;
-		}*/
-
+		}
+*/
 
 		//Release Device Resources
 		m_deviceResources.reset();
@@ -119,28 +146,28 @@ namespace Renderer
 	void CRendererController::Draw()
 	{
 		auto d3dDeviceContext = m_deviceResources->GetD3DDeviceContext();
-		FLOAT clearClor[4] = { 0.0f,1.0f,1.0f,1.0f };
+		FLOAT clearClor[4] = { 0.0f,0.0f,0.0f,1.0f };
 		d3dDeviceContext->ClearRenderTargetView(m_deviceResources->GetBackBufferRenderTargetView(), clearClor);
 		d3dDeviceContext->ClearDepthStencilView(m_deviceResources->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 1);
 
 		m_View->Begin(m_View.get());
-		for (auto eachShaderEffect : m_View->m_opaqueShaderEffects->m_set)
+		for (auto& eachShaderEffect : m_View->GetOpaqueShaderEffects()->m_Set)
 		{
-			CShaderEffect* SEptr = (CShaderEffect*)eachShaderEffect;
-			SEptr->Begin(m_View.get());
-			for (auto eachMateial : SEptr->m_Materials->m_set)
+			CShaderEffect& SEptr = (CShaderEffect&)(*eachShaderEffect);
+			SEptr.Begin(m_View.get());
+			for (auto& eachMateial : SEptr.m_Materials->m_Set)
 			{
-				CMaterial* MATptr = (CMaterial*)eachMateial;
-				MATptr->Begin(m_View.get());
-				for (auto eachRenderable : MATptr->m_renderables->m_set)
+				CMaterial& MATptr = (CMaterial&)(*eachMateial);
+				MATptr.Begin(m_View.get());
+				for (auto& eachRenderable : MATptr.m_Renderables->m_Set)
 				{
-					CRenderable* RENptr = (CRenderable*)eachRenderable;
-					RENptr->Begin(m_View.get());
-					RENptr->End(m_View.get());
+					CRenderable& RENptr = (CRenderable&)(*eachRenderable);
+					RENptr.Begin(m_View.get());
+					RENptr.End(m_View.get());
 				}
-				MATptr->End(m_View.get());
+				MATptr.End(m_View.get());
 			}
-			SEptr->End(m_View.get());
+			SEptr.End(m_View.get());
 		}
 #ifdef _DEBUG
 		TwDraw();

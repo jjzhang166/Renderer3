@@ -148,6 +148,8 @@ namespace Renderer
 
 	/*virtual*/ void CRenderable::Begin(IRenderNode* pCurrentView) /*final*/
 	{
+		CView& view = (CView&)(*pCurrentView);
+		view.m_CurrentRenderable = this;
 		static auto deviceContextPtr = CRendererController::m_deviceResources->GetD3DDeviceContext();
 		deviceContextPtr->IASetInputLayout(m_pInputLayoutManager.inputLayouts[CInputLayoutManager::eVertex_POSNORDIFF].Get());
 		unsigned int strid = sizeof(Vertex);
@@ -155,19 +157,24 @@ namespace Renderer
 		deviceContextPtr->IASetVertexBuffers(0, 1, m_d3dVertexBuffer.GetAddressOf(), &strid, &offset);
 		deviceContextPtr->IASetIndexBuffer(m_d3dIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 		deviceContextPtr->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		CView& view = (CView&)(*pCurrentView);
+	
 		SetPerObjectData(view.ViewMatrix(), view.ProjectionMatrix());
 		deviceContextPtr->DrawIndexed(m_uNumofIndices,0,0);
 
 	}
 	/*virtual*/ void CRenderable::End(IRenderNode* pCurrentView) /*final*/
 	{
+		
+
 		static auto deviceContextPtr = CRendererController::m_deviceResources->GetD3DDeviceContext();
 		deviceContextPtr->IASetInputLayout(nullptr);
 		unsigned int strid = 0;
 		unsigned int offset = 0;
 		deviceContextPtr->IASetVertexBuffers(0, 0, nullptr, &strid, &offset);
 		deviceContextPtr->IASetIndexBuffer(nullptr, DXGI_FORMAT_R32_UINT, 0);
+
+		CView& view = (CView&)(*pCurrentView);
+		view.m_CurrentRenderable = nullptr;
 		
 	}
 
@@ -182,7 +189,16 @@ namespace Renderer
 	{
 		auto vp = XMMatrixMultiply(XMLoadFloat4x4(&view),XMLoadFloat4x4(&proj));
 		XMFLOAT3 up(0.0f, 1.0f, 0.0f);
-		XMStoreFloat4x4(&m_d3dWorldMatrix, XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationAxis(XMLoadFloat3(&up), XMConvertToRadians(Randomfloat(-100.0f, 100.0f))) * XMMatrixTranslation(Randomfloat(-100.0f, 100.0f), Randomfloat(-100.0f, 100.0f), Randomfloat(-100.0f, 100.0f)));
+
+
+		static float rotation = 180.0f;
+		static float scale =1.0f;
+#ifdef _DEBUG
+		TwAddVarRW(CRendererController::m_TweakBar, "Rotation", TW_TYPE_FLOAT, &rotation, " min=0 max=360 step=0.5 group=Engine label='Rotation Angle' ");
+		TwAddVarRW(CRendererController::m_TweakBar, "Scale", TW_TYPE_FLOAT, &scale, " min=0.1 max=10.0 step=0.05 group=Engine label='Scale' ");
+#endif // _DEBUG
+
+		XMStoreFloat4x4(&m_d3dWorldMatrix,  XMMatrixScaling(scale, scale, scale) *  XMMatrixRotationAxis(XMLoadFloat3(&up), XMConvertToRadians(rotation)));
 
 		auto mvp = XMMatrixMultiply(XMLoadFloat4x4(&m_d3dWorldMatrix), vp);
 		XMFLOAT4X4 mvp4x4;

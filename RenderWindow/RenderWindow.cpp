@@ -151,10 +151,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	
+#ifdef _DEBUG
 	if (instance->TweakBarEventWin(hWnd, message, wParam, lParam))
 		return 0; // Event has been handled by AntTweakBar
-
+#endif // _DEBUG
     switch (message)
     {
     case WM_COMMAND:

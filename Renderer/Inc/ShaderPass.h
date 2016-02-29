@@ -16,6 +16,7 @@ namespace Renderer
 	template<typename Shadertype> class CShaderHandle;
 	class CShaderPass : public IRenderNode
 	{
+		friend class CView;
 
 	private:
 		unsigned int m_blendState;

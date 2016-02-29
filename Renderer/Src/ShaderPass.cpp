@@ -8,6 +8,7 @@
 ************************************************/
 #include "stdafx.h"
 #include "..\stdafx.h"
+#include "..\Inc\View.h"
 #include "..\Inc\ShaderPass.h"
 #include "..\Inc\ShaderHandle.h"
 #include "..\Inc\RendererController.h"
@@ -89,6 +90,9 @@ namespace Renderer
 
 	/*virtual*/ void CShaderPass::Begin(IRenderNode* pCurrentView) /*final*/
 	{
+		CView& view = (CView&)(*pCurrentView);
+		view.m_CurrentShaderPass = this;
+		view.m_CurrentState = SHADERPASS_BEGIN;
 		static auto deviceContext = CRendererController::m_deviceResources->GetD3DDeviceContext();
 		if (m_pVertexShader)
 		{
@@ -128,5 +132,9 @@ namespace Renderer
 		deviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 		deviceContext->OMSetDepthStencilState(nullptr, 0);
 		deviceContext->RSSetState(nullptr);
+
+		CView& view = (CView&)(*pCurrentView);
+		view.m_CurrentShaderPass = nullptr;
+		view.m_CurrentState = SHADERPASS_END;
 	}
 }

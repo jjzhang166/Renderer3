@@ -15,6 +15,7 @@ namespace Renderer
 	class CInputLayoutManager;
 	class CRenderable : public IRenderNode
 	{
+		friend class CView;
 		struct _regAlign Vertex
 		{
 			float3 pos;

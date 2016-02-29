@@ -5,7 +5,7 @@ struct _regAlign VERIN_POSNORDIFF
 {
 	float3 position SEMANTIC(POSITION0);
 	float3 normal SEMANTIC(NORMAL0);
-	float3 diffuse SEMANTIC(COLOR0);
+	float3 texcoord SEMANTIC(TEXCOORD0);
     float3 padding SEMANTIC(PADDING0);
 };
 
@@ -32,7 +32,7 @@ struct _regAlign VEROUT_POSNORDIFF
 {
 	float4 position SEMANTIC(SV_POSITION);
 	float3 normal  SEMANTIC(NORMAL);
-	float4 color SEMANTIC(COLOR);
+    float2 texcoord SEMANTIC(TEXCOORD);
 };
 
 struct _regAlign VEROUT_PosNorDiffUVTan
