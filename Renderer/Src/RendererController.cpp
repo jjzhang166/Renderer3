@@ -73,11 +73,11 @@ namespace Renderer
 		deviceContext->GSSetSamplers(0, CCommonStateObjects::COUNT_SS, m_CommonState->m_samplerStates);
 		deviceContext->DSSetSamplers(0, CCommonStateObjects::COUNT_SS, m_CommonState->m_samplerStates);
 
-
+		
 		XMFLOAT3 up(0.0f, 1.0f, 0.0f);
 		XMFLOAT3 side(1.0f, 0.0f, 0.0f);
 		XMFLOAT3 forward(0.0f, 0.0f, -1.0f);
-		XMFLOAT3 position(0.0f, 75.0f, 100.0f);
+		XMFLOAT3 position(0.0f, 30.0f, 100.0f);
 
 		auto view = XMMatrixLookToLH(XMLoadFloat3(&position), XMLoadFloat3(&forward), XMLoadFloat3(&up));
 		auto proj = XMMatrixPerspectiveFovLH(XMConvertToRadians(90.0f), 16.0f / 9.0f, 0.1f, 1000.0f);
@@ -95,14 +95,22 @@ namespace Renderer
 		m_ShaderEffect->m_ShaderPass = unique_ptr<CShaderPass>(new CShaderPass(m_deviceResources->GetD3DDevice(), "CSO\\VertexShader.cso", "CSO\\PixelShader.cso", nullptr, nullptr, nullptr, 0, 1, 2));
 		m_Material = new CMaterial();
 		ID3D11ShaderResourceView* testSRV = nullptr;
-		DirectX::CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"Teddy_D.dds", nullptr, &testSRV);
+		ID3D11ShaderResourceView* testHeightSRV = nullptr;
+
+
+		CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"terrainTexture.dds", nullptr, &testSRV);
+		//CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"Teddy_D.dds", nullptr, &testSRV);
+		CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"heightmap.dds", nullptr, &testHeightSRV);
 		m_Material->AddMap(0, testSRV);
+		m_Material->AddMap(4, testHeightSRV);
 		m_ShaderEffect->m_Materials->AddtoHead(m_Material);
 		XMFLOAT4X4 world4x4;
 		for (size_t i = 0; i < 1; i++)
 		{
 			XMStoreFloat4x4(&world4x4, XMMatrixIdentity());
-			auto newRenderable = new CRenderable(*m_Material, world4x4, "Teddy_Idle.mesh");
+			auto newRenderable = new CRenderable(*m_Material, world4x4, "testplane.mesh");
+
+			//auto newRenderable = new CRenderable(*m_Material, world4x4, "Teddy_Idle.mesh");
 			m_Renderables.push_back(newRenderable);
 			m_Material->m_Renderables->AddtoHead(newRenderable);
 		}
@@ -138,7 +146,7 @@ namespace Renderer
 		}
 */
 
-		//Release Device Resources
+//Release Device Resources
 		m_deviceResources.reset();
 
 	}

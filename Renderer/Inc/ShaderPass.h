@@ -23,7 +23,7 @@ namespace Renderer
 		unsigned int m_depthStencilState;
 		unsigned int m_rasterizerStates;
 
-		
+
 		//Shaders
 		CShaderHandle<ID3D11VertexShader>*		m_pVertexShader = nullptr;
 		CShaderHandle<ID3D11PixelShader>*		m_pPixelShader = nullptr;
@@ -33,6 +33,10 @@ namespace Renderer
 
 
 	public:
+
+		//Opaque_BS = 0, AlphaBlend_BS, Additive_BS, NonPremultiplied_BS
+		//DepthNone_DSS = 0, DepthDefault_DSS, DepthRead_DSS
+		//CullNone_RS = 0, CullClockwise_RS, CullCounterClockwise_RS, Wireframe_RS
 		CShaderPass(ID3D11Device* d3dDevice, unsigned int blendState = 0, unsigned int depthStencilState = 1, unsigned int rasterizerStates = 0);
 		CShaderPass(ID3D11Device* d3dDevice,
 			const char* vs_file, const char* ps_file, const char* hs_file, const char* ds_file, const char* gs_file,

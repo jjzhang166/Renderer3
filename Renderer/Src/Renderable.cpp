@@ -157,14 +157,14 @@ namespace Renderer
 		deviceContextPtr->IASetVertexBuffers(0, 1, m_d3dVertexBuffer.GetAddressOf(), &strid, &offset);
 		deviceContextPtr->IASetIndexBuffer(m_d3dIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 		deviceContextPtr->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	
+
 		SetPerObjectData(view.ViewMatrix(), view.ProjectionMatrix());
-		deviceContextPtr->DrawIndexed(m_uNumofIndices,0,0);
+		deviceContextPtr->DrawIndexed(m_uNumofIndices, 0, 0);
 
 	}
 	/*virtual*/ void CRenderable::End(IRenderNode* pCurrentView) /*final*/
 	{
-		
+
 
 		static auto deviceContextPtr = CRendererController::m_deviceResources->GetD3DDeviceContext();
 		deviceContextPtr->IASetInputLayout(nullptr);
@@ -175,7 +175,7 @@ namespace Renderer
 
 		CView& view = (CView&)(*pCurrentView);
 		view.m_CurrentRenderable = nullptr;
-		
+
 	}
 
 	float Randomfloat(float a, float b) {
@@ -185,20 +185,29 @@ namespace Renderer
 		return a + r;
 	}
 
+
+	static float rotation = 180.0f;
+	static float scale = 1.0f;
+
+
 	void CRenderable::SetPerObjectData(DirectX::XMFLOAT4X4& view, DirectX::XMFLOAT4X4& proj)
 	{
-		auto vp = XMMatrixMultiply(XMLoadFloat4x4(&view),XMLoadFloat4x4(&proj));
+		auto vp = XMMatrixMultiply(XMLoadFloat4x4(&view), XMLoadFloat4x4(&proj));
 		XMFLOAT3 up(0.0f, 1.0f, 0.0f);
 
 
-		static float rotation = 180.0f;
-		static float scale =1.0f;
+
 #ifdef _DEBUG
-		TwAddVarRW(CRendererController::m_TweakBar, "Rotation", TW_TYPE_FLOAT, &rotation, " min=0 max=360 step=0.5 group=Engine label='Rotation Angle' ");
-		TwAddVarRW(CRendererController::m_TweakBar, "Scale", TW_TYPE_FLOAT, &scale, " min=0.1 max=10.0 step=0.05 group=Engine label='Scale' ");
+		static bool callOnce = true;
+		if (callOnce)
+		{
+			TwAddVarRW(CRendererController::m_TweakBar, "Rotation", TW_TYPE_FLOAT, &rotation, " min=0 max=360 step=0.5 group=Engine label='Rotation Angle' ");
+			TwAddVarRW(CRendererController::m_TweakBar, "Scale", TW_TYPE_FLOAT, &scale, " min=0.1 max=10.0 step=0.05 group=Engine label='Scale' ");
+			callOnce = false;
+		}
 #endif // _DEBUG
 
-		XMStoreFloat4x4(&m_d3dWorldMatrix,  XMMatrixScaling(scale, scale, scale) *  XMMatrixRotationAxis(XMLoadFloat3(&up), XMConvertToRadians(rotation)));
+		XMStoreFloat4x4(&m_d3dWorldMatrix, XMMatrixScaling(scale, scale, scale) *  XMMatrixRotationAxis(XMLoadFloat3(&up), XMConvertToRadians(rotation)));
 
 		auto mvp = XMMatrixMultiply(XMLoadFloat4x4(&m_d3dWorldMatrix), vp);
 		XMFLOAT4X4 mvp4x4;
